@@ -21,6 +21,7 @@ Shader "Hidden/Light2D-Point"
             #pragma fragment frag
             #pragma multi_compile_local USE_POINT_LIGHT_COOKIES __
             #pragma multi_compile_local LIGHT_QUALITY_FAST __
+            #pragma multi_compile_local LIGHT_QUALITY_CELL __
             #pragma multi_compile_local USE_NORMAL_MAP __
             #pragma multi_compile_local USE_ADDITIVE_BLENDING __
 

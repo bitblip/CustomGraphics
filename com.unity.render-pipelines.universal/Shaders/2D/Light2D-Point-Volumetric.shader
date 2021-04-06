@@ -15,6 +15,7 @@ Shader "Hidden/Light2d-Point-Volumetric"
             #pragma fragment frag
             #pragma multi_compile_local USE_POINT_LIGHT_COOKIES __
             #pragma multi_compile_local LIGHT_QUALITY_FAST __
+            #pragma multi_compile_local LIGHT_QUALITY_CELL __
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/2D/Include/LightingUtility.hlsl"
@@ -92,6 +93,8 @@ Shader "Hidden/Light2d-Point-Volumetric"
                 output.lightDirection.z = _LightZDistance;
                 output.lightDirection.w = 0;
                 output.lightDirection.xyz = normalize(output.lightDirection.xyz);
+#elif LIGHT_QUALITY_CELL
+                output.positionWS = worldSpacePos;
 #else
                 output.positionWS = worldSpacePos;
 #endif

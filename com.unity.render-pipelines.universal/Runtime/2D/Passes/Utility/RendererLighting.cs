@@ -12,6 +12,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
         private static readonly string k_SpriteLightKeyword = "SPRITE_LIGHT";
         private static readonly string k_UsePointLightCookiesKeyword = "USE_POINT_LIGHT_COOKIES";
         private static readonly string k_LightQualityFastKeyword = "LIGHT_QUALITY_FAST";
+        private static readonly string k_LightQualityCellKeyword = "LIGHT_QUALITY_CELL";
         private static readonly string k_UseNormalMap = "USE_NORMAL_MAP";
         private static readonly string k_UseAdditiveBlendingKeyword = "USE_ADDITIVE_BLENDING";
 
@@ -444,6 +445,8 @@ namespace UnityEngine.Experimental.Rendering.Universal
             bitIndex++;
             var useNormalMap = light.useNormalMap ? 1u << bitIndex : 0u;
 
+            // TODO: useCellShadingBit
+
             return pointFastQualityBit | pointCookieBit | spriteBit | additiveBit | shapeBit | volumeBit | useNormalMap;
         }
 
@@ -475,6 +478,9 @@ namespace UnityEngine.Experimental.Rendering.Universal
 
             if (isPoint && light.pointLightQuality == Light2D.PointLightQuality.Fast)
                 material.EnableKeyword(k_LightQualityFastKeyword);
+
+            if (isPoint && light.pointLightQuality == Light2D.PointLightQuality.Cell)
+                material.EnableKeyword(k_LightQualityCellKeyword);
 
             if (light.useNormalMap)
                 material.EnableKeyword(k_UseNormalMap);

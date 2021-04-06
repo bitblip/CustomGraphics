@@ -8,7 +8,8 @@ namespace UnityEngine.Experimental.Rendering.Universal
         public enum PointLightQuality
         {
             Fast = 0,
-            Accurate = 1
+            Accurate = 1,
+            Cell = 2
         }
 
         [SerializeField] float m_PointLightInnerAngle = 360.0f;

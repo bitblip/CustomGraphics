@@ -16,7 +16,7 @@
             half4 normal = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, input.screenUV);\
             half3 normalUnpacked = UnpackNormal(normal);\
             lightColor = lightColor * saturate(dot(input.lightDirection.xyz, normalUnpacked));
-    #else
+    #elif LIGHT_QUALITY_CELL
         #define NORMALS_LIGHTING_COORDS(TEXCOORDA, TEXCOORDB) \
             half4	positionWS : TEXCOORDA;\
             half2	screenUV   : TEXCOORDB;
@@ -30,10 +30,28 @@
             half4 normal = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, input.screenUV);\
             half3 normalUnpacked = UnpackNormal(normal);\
             half3 dirToLight;\
-            dirToLight.xy = _LightPosition.xy - input.positionWS.xy;\
+            dirToLight.xy = _LightPosition.xy;\
             dirToLight.z =  _LightZDistance;\
             dirToLight = normalize(dirToLight);\
-            lightColor = lightColor * saturate(dot(dirToLight, normalUnpacked));
+            lightColor = lightColor = lightColor * lerp(1, .5, step(dot(dirToLight.xyz, normalUnpacked), 0.60));
+    #else
+        #define NORMALS_LIGHTING_COORDS(TEXCOORDA, TEXCOORDB) \
+                        half4	positionWS : TEXCOORDA;\
+                        half2	screenUV   : TEXCOORDB;
+
+        #define TRANSFER_NORMALS_LIGHTING(output, worldSpacePos) \
+                        float4 clipVertex = output.positionCS / output.positionCS.w;\
+                        output.screenUV = ComputeScreenPos(clipVertex).xy; \
+                        output.positionWS = worldSpacePos;
+
+        #define APPLY_NORMALS_LIGHTING(input, lightColor)\
+                        half4 normal = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, input.screenUV);\
+                        half3 normalUnpacked = UnpackNormal(normal);\
+                        half3 dirToLight;\
+                        dirToLight.xy = _LightPosition.xy - input.positionWS.xy;\
+                        dirToLight.z =  _LightZDistance;\
+                        dirToLight = normalize(dirToLight);\
+                        lightColor = lightColor * saturate(dot(dirToLight, normalUnpacked));
     #endif
 
     #define NORMALS_LIGHTING_VARIABLES \
